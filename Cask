@@ -5,6 +5,7 @@
 
 (package-file "blackify.el")
 
+(depends-on "dash")
+
 (development
- (depends-on "ert")
- (depends-on "package-lint"))
+ (depends-on "ert"))

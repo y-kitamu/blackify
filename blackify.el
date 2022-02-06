@@ -4,6 +4,7 @@
 
 ;; Author: Yusuke Kitamura <ymyk6602@gmail.com>
 ;; Keywords: languages
+;; Version: 1.0.0
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -25,6 +26,7 @@
 ;; has similar (analogous) functions and variables to it.
 
 ;;; Code:
+(require 'cl-lib)
 (require 'dash)
 
 (defcustom blackify-executable "black"
@@ -33,6 +35,7 @@
   :group 'blackify)
 
 (defcustom blackfiy-lighter " black"
+  "Lighter of blackify-mode."
   :type 'string
   :group 'blackify)
 
@@ -96,7 +99,7 @@ If black exits with an error, the output will be shown in a help-window."
 (define-minor-mode blackify-mode
   "Automatically run black before saving."
   :lighter blackify-lighter
-  (if black-mode
+  (if blackify-mode
       (add-hook 'before-save-hook 'blackify-buffer nil t)
     (remove-hook 'before-save-hook 'blackify-buffer t)))
 
