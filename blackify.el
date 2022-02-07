@@ -44,8 +44,7 @@
 Return the exit code.  START-LINE and END-LINE specify region to
 format."
   (with-current-buffer input-buffer
-    (call-process-region start-pos end-pos blackify-executable nil output-buffer nil "--code")))
-
+    (call-process-region start-pos end-pos blackify-executable nil output-buffer nil "-" "-q")))
 
 ;;;###autoload
 (defun blackify-region (beginning end)
@@ -58,20 +57,17 @@ If black exits with an error, the output will be shown in a help-window."
          (original-point (point))  ; Because we are replacing text, save-excursion does not always work.
          (buffer-windows (get-buffer-window-list original-buffer nil t))
          (original-window-pos (mapcar 'window-start buffer-windows))
-         (start-pos  (line-beginning-position (line-number-at-pos beginning)))
-         (end-pos (line-end-position (line-number-at-pos end)))
          (tmpbuf (get-buffer-create "*blackify*"))
-         (exit-code (blackify-call-bin original-buffer tmpbuf start-pos end-pos)))
+         (exit-code (blackify-call-bin original-buffer tmpbuf beginning end)))
     (deactivate-mark)
     ;; There are three exit-codes defined for YAPF:
     ;; 0: Exit with success (change or no change on yapf >=0.11)
-    ;; 1: Exit with error
-    ;; 2: Exit with success and change (Backward compatibility)
+    ;; 123: Exit with error
     ;; anything else would be very unexpected.
-    (cond ((or (eq exit-code 0) (eq exit-code 2))
+    (cond ((eq exit-code 0)
            (with-current-buffer tmpbuf
              (copy-to-buffer original-buffer (point-min) (point-max))))
-          ((eq exit-code 1)
+          ((eq exit-code 123)
            (error "Black failed, see %s buffer for details" (buffer-name tmpbuf))))
     ;; Clean up tmpbuf
     (kill-buffer tmpbuf)
