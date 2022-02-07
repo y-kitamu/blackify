@@ -43,7 +43,7 @@
   "Call process black on INPUT-BUFFER saving the output to OUTPUT-BUFFER.
 Return the exit code.  START-LINE and END-LINE specify region to
 format."
-  (let ((command-args (split-string yapfify-executable)))
+  (let ((command-args (split-string blackify-executable)))
     (if (= (length command-args) 1)
         (with-current-buffer input-buffer
           (call-process-region start-pos end-pos
