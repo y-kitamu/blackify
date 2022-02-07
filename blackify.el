@@ -43,8 +43,17 @@
   "Call process black on INPUT-BUFFER saving the output to OUTPUT-BUFFER.
 Return the exit code.  START-LINE and END-LINE specify region to
 format."
-  (with-current-buffer input-buffer
-    (call-process-region start-pos end-pos blackify-executable nil output-buffer nil "-" "-q")))
+  (let ((command-args (split-string yapfify-executable)))
+    (if (= (length command-args) 1)
+        (with-current-buffer input-buffer
+          (call-process-region start-pos end-pos
+                               (substitute-in-file-name blackify-executable)
+                               nil output-buffer nil "-" "-q"))
+      (with-current-buffer input-buffer
+        (setq res (apply 'call-process-region
+                         (append (list (point-min) (point-max) (car command-args) nil
+                                       output-buffer nil) (cdr command-args)
+                                       (list "-" "-q"))))))))
 
 ;;;###autoload
 (defun blackify-region (beginning end)
