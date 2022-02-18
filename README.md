@@ -12,6 +12,6 @@ Yapfify (yapf) can be easily replaced to blackify (black) only by renaming
 
 ```lisp
 (use-package blackify
-    :straight (blackify :type git :host github :repo "y-kitamu/blackify")
+    :straight (blackify :type git :branch "main" :repo "https://github.com/y-kitamu/blackify")
     :hook (python-mode . blackify-mode))
 ```
